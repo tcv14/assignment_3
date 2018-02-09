@@ -4,14 +4,9 @@ PB2017 <- read.csv('./Data/PB Apprehensions 2017.csv')
 monthly <- read.csv('./Data/PB monthly summaries.csv')
 
 # Clean the data
-PB2010 <- cbind(Sector=PB2010[,1],PB2010[,5:ncol(PB2010)],PB2010[,2:4])
-
 PB2017 <- PB2017[,-14]
 PB2017 <- PB2017[-10,]
 PB2017 <- cbind(Sector=PB2010$Sector,as.data.frame(sapply(PB2017[2:ncol(PB2017)],function(x){as.integer(gsub(',','',x))})))
-PB2017 <- cbind(Sector=PB2017[,1],PB2017[,5:ncol(PB2017)],PB2017[,2:4])
-
-monthly <- cbind(year=monthly[,1],monthly[,5:ncol(monthly)],monthly[,2:4])
 
 # Save cleaned data
 saveRDS(PB2010,file="./Data/PB Apprehensions 2010.rds")
@@ -25,15 +20,15 @@ saveRDS(monthly,file='./Data/PB monthly summaries.rds')
 # n should be a string that indicates the month of the graph
 
 month_graph <- function(PB1,PB2,n){
-    month <- c('January','Feburary','March','April','May','June','July','August',
-               'September','October','November','December')
+    month <- c('October','November','December','January','Feburary','March','April','May','June','July','August',
+               'September')
     time <- which(month==n)
     m <- rbind(PB1[,time+1],PB2[,time+1])
     rownames(m) <- c('2010','2017')
     colnames(m) <- PB2010$Sector
     barplot(as.matrix(m),col=c('darkblue','red'),ylab='Number of Apprehensions',
             main=paste('Total Number of Illegal Alien Apprehensions in', n,sep = ' '),
-            beside = TRUE,las=2,cex.names = 0.7)
+            beside = TRUE,las=2,cex.names = 0.6)
     legend("topleft", 
            legend = rownames(m), 
            fill = c("darkblue", "red"))
@@ -53,8 +48,8 @@ sector_graph <- function(PB1,PB2,n){
     s <- which(sector==n)
     m <- rbind(PB1[s,-1],PB2[s,-1])
     rownames(m) <- c('2010','2017')
-    colnames(m) <- c('January','Feburary','March','April','May','June','July','August',
-                     'September','October','November','December')
+    colnames(m) <- c('October','November','December','January','Feburary','March','April','May','June','July','August',
+                    'September')
     barplot(as.matrix(m),col=c('yellow','green'),ylab='Number of Apprehensions',
             main=paste('Total Number of Illegal Alien Apprehensions in',n,sep = ' '),
             beside = TRUE, las=2)
@@ -69,11 +64,17 @@ sector_graph(PB2010,PB2017,'Big Bend')
 
 # Sector with most apprehensions in 2010
 PB2010$Total <- apply(PB2010[,-1],1,sum)
-most_2010 <- as.character(PB2010$Sector[PB2010$Total==max(PB2010$Total)])
+most_2010 <- PB2010[PB2010$Total==max(PB2010$Total),]
 
 # Sector with most apprehensions in 2017
 PB2017$Total <- apply(PB2017[,-1],1,sum)
-most_2017 <- as.character(PB2017$Sector[PB2017$Total==max(PB2017$Total)])
+most_2017 <- PB2017[PB2017$Total==max(PB2017$Total),]
+
+# Combine these two rows as a new matrix
+most <- t(rbind(most_2010,most_2017))
+colnames(most) <- c('2010','2017')
+most <- most[-1,]
+most <- most[-13,]
 
 # Three months periods
 
