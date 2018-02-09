@@ -13,6 +13,12 @@ PB2017 <- cbind(Sector=PB2017[,1],PB2017[,5:ncol(PB2017)],PB2017[,2:4])
 
 monthly <- cbind(year=monthly[,1],monthly[,5:ncol(monthly)],monthly[,2:4])
 
+# Save cleaned data
+saveRDS(PB2010,file="PB Apprehensions 2010.rds")
+saveRDS(PB2017,file='PB Apprehensions 2017.rds')
+saveRDS(monthly,file='PB monthly summaries.rds')
+
+
 # Compare by month
 
 month_graph <- function(PB1,PB2,n){
@@ -51,5 +57,21 @@ sector_graph <- function(PB1,PB2,n){
 
 sector_graph(PB2010,PB2017,'Big Bend')
 
+# Sector with most apprehensions in 2010
+PB2010$Total <- apply(PB2010[,-1],1,sum)
+most_2010 <- as.character(PB2010$Sector[PB2010$Total==max(PB2010$Total)])
+
+# Sector with most apprehensions in 2017
+PB2017$Total <- apply(PB2017[,-1],1,sum)
+most_2017 <- as.character(PB2017$Sector[PB2017$Total==max(PB2017$Total)])
+
 # Three months periods
 
+new_month <- subset(monthly[,-1])
+
+c('Jan-Mar','Feb-Apr','Mar-May','Apr-Jun','May-Jul','Jun-Aug','Jul-Sep','Aug-Oct','Sep-Nov','Oct-Dec')
+three <- function(x) {
+  for (i in (1:ncol(x)-2)) {
+    
+  }
+}

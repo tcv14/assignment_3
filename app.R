@@ -9,7 +9,7 @@
 
 library(shiny)
 
-data2010 <- read.csv('./Data/BP Apprehensions 2010.csv')
+data2010 <- readRDS('./Data/PB Apprehensions 2010.rds')
 
 # Define UI for application that draws a barplot
 ui <- fluidPage(    
@@ -57,7 +57,7 @@ shinyApp(ui = ui, server = server)
 
 ###
 
-data2017 <- read.csv('./Data/PB Apprehensions 2017.csv')
+data2017 <- readRDS('./Data/PB Apprehensions 2017.rds')
 
 # Define UI for application that draws a barplot
 ui <- fluidPage(    
