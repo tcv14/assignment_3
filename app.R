@@ -9,10 +9,13 @@
 
 library(shiny)
 
-# load in teh required data and rbind to create one data frame for side by side barplots later
+# load in the required data and rbind to create one data frame for side by side barplots later
 data2010 <- readRDS('./Data/PB Apprehensions 2010.rds')
 data2017 <- readRDS('./Data/PB Apprehensions 2017.rds')
-completedata <- rbind(data2010,data2017)
+monthlysummaries <- readRDS('./Data/PB monthly summaries.rds')
+colnames(monthlysummaries) <- c('Sector','October','November','December','January','February','March','April','May','June','July','August','September')
+
+completedata <- rbind(monthlysummaries,data2010,data2017)
 
 # Define UI for application that draws a barplot
 ui <- fluidPage(    
@@ -55,7 +58,7 @@ server <- function(input, output) {
             ylab="Number of Apprehensions",
             xlab="Month",
             col = c("green","blue"))
-    legend("topright",c("2010","2017"),pch=15,col=c("green","blue"),bty="n")
+    legend("topright",c("2010","2017"),pch=19,col=c("green","blue"),bty="n")
   })
 }
 
