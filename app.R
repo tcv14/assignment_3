@@ -18,6 +18,17 @@ colnames(monthlysummaries) <- c('Sector','October','November','December','Januar
 completedata <- rbind(monthlysummaries,data2010,data2017)
 
 # Define UI for application that draws a barplot
+ui <- navbarPage(
+  title = 'DataTable Options',
+  tabPanel('Display length',     DT::dataTableOutput('ex1')),
+  tabPanel('Length menu',        DT::dataTableOutput('ex2')),
+  tabPanel('No pagination',      DT::dataTableOutput('ex3')),
+  tabPanel('No filtering',       DT::dataTableOutput('ex4')),
+  tabPanel('Function callback',  DT::dataTableOutput('ex5'))
+)
+
+https://stackoverflow.com/questions/46145608/how-to-combine-top-navigation-navbarpage-and-a-sidebar-menu-sidebarmenu-in-s
+
 ui <- fluidPage(    
   
   # Give a title
