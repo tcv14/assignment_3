@@ -13,6 +13,10 @@ saveRDS(PB2010,file="./Data/PB Apprehensions 2010.rds")
 saveRDS(PB2017,file='./Data/PB Apprehensions 2017.rds')
 saveRDS(monthly,file='./Data/PB monthly summaries.rds')
 
+
+
+# PART A plots
+
 # Compare by month
 
 # write a function that would produce barplots by month
@@ -62,6 +66,9 @@ sector_graph <- function(PB1,PB2,n){
 
 sector_graph(PB2010,PB2017,'Big Bend')
 
+
+# PART B t-test by sector
+
 # Sector with most apprehensions in 2010
 PB2010$Total <- apply(PB2010[,-1],1,sum)
 most_2010 <- PB2010[PB2010$Total==max(PB2010$Total),]
@@ -92,6 +99,9 @@ t.test(most$`2010`,most$`2017`,paired=FALSE,var.equal = TRUE,alternative='greate
 # with a significance level of 0.05, we have to reject the null hypothesis and conclude that the mean level in 2010 is greater than the mean level in 2017
 
 
+
+# PART C t-test for three month period
+
 # Three months periods
 
 # write a function that would return a dataframe with the total number of apprehensions in 3-month period
@@ -110,8 +120,8 @@ three_period <- function(object) {
   period
 }
 
-t_month_2010 <- three_period(PB2010)
-t_month_2017 <- three_period(PB2017)
+t_month_2010 <- three_period(PB2010[,1:13])
+t_month_2017 <- three_period(PB2017[,1:13])
 
 # Calculate the total apprehension for each three month period and assign a name for the new row
 t_month_2010 <- rbind(t_month_2010,colSums(t_month_2010))
@@ -142,14 +152,29 @@ t.test(max_three$max_2010,max_three$max_2017,paired=FALSE,var.equal = TRUE,alter
 # with a significance level of 0.05, we can conclude that mean level of apprehension in 2017 is greater than the mean level of apprehension in 2010
 # thus we can say that there is an increae in meal apprehension level from 2010 to 2017
 
-# # Time series data
-# ts <- as.vector(t(monthly[,-1]))
-# ts3 <- ts(ts2, start = c(2000,10), frequency=12)
 
 
-# ts.plot(ts1)
+# PART D time series data
 
-# monthly data mean
-# monthly$mean <- apply(monthly[,-1],1,mean)
+# order the dataset so that the year is in ascending order
+monthly <- monthly[order(monthly$year),]
 
+# yearly average apprehension
+monthly$mean <- apply(monthly[,-1],1,mean)
 
+ts1 <- monthly[,2:13]
+ts2 <- as.vector(t(ts1))
+ts3 <- ts(ts2, start = c(2000,1), frequency=12) # convert the fiscal year into normal calendar year
+
+tsplot <- function(ts) {
+  ts.plot(ts, gpars=list(xlab="Fiscal Year", ylab="Apprehensions", lty=c(1:3)),col='blue',main='Time Series Data for Monthly Apprehensions')
+  label <- as.character(seq(from=2000,to=2017))
+  for (i in 1:18) {
+    segments(monthly$year[i],monthly$mean[i],monthly$year[i]+1,monthly$mean[i],col='red')
+    text(x=monthly$year[i]+0.9,y=monthly$mean[i],pos=4,labels=label[i],col='red',cex=0.5,font=2)
+  }
+  abline(v=2000:2017,col='grey',lty=3)
+  legend('topright',lty=1,col='red',legend = 'Average Apprehensions for year 20xx',cex = 0.75)
+}
+
+tsplot(ts3)
