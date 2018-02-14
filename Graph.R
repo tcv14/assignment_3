@@ -31,15 +31,14 @@ month_graph <- function(PB1,PB2,n){
     rownames(m) <- c('2010','2017')
     colnames(m) <- PB2010$Sector
     barplot(as.matrix(m),col=c('darkblue','red'),ylab='Number of Apprehensions',
-            main=paste('Total Number of Illegal Alien Apprehensions in', n,sep = ' '),
+            main=paste('Total Number of Apprehensions in', n,sep = ' '),
             beside = TRUE,las=2,cex.names = 0.6)
     legend("topleft", 
            legend = rownames(m), 
            fill = c("darkblue", "red"))
 }
 
-# an example of the function above
-month_graph(PB2010,PB2017,'January')
+month_graph(PB2010,PB2017,'October')
 
 # Compare by sector
 
@@ -50,21 +49,17 @@ month_graph(PB2010,PB2017,'January')
 sector_graph <- function(PB1,PB2,n){
     sector <- as.character(PB2010$Sector)
     s <- which(sector==n)
-    m <- rbind(PB1[s,-1],PB2[s,-1])
+    m <- rbind(PB1[s,2:13],PB2[s,2:13])
     rownames(m) <- c('2010','2017')
     colnames(m) <- c('October','November','December','January','Feburary','March','April','May','June','July','August',
                     'September')
     barplot(as.matrix(m),col=c('yellow','green'),ylab='Number of Apprehensions',
-            main=paste('Total Number of Illegal Alien Apprehensions in',n,sep = ' '),
+            main=paste('Total Number of Apprehensions in',n,sep = ' '),
             beside = TRUE, las=2)
     legend("topright", 
            legend = rownames(m), 
            fill = c("yellow", "green"))
 }
-
-# an example of the function above
-
-sector_graph(PB2010,PB2017,'Big Bend')
 
 
 # PART B t-test by sector
@@ -164,7 +159,7 @@ monthly$mean <- apply(monthly[,-1],1,mean)
 
 ts1 <- monthly[,2:13]
 ts2 <- as.vector(t(ts1))
-ts3 <- ts(ts2, start = c(2000,1), frequency=12) # convert the fiscal year into normal calendar year
+ts3 <- ts(ts2, start = c(2000,1), frequency=12)
 
 tsplot <- function(ts) {
   ts.plot(ts, gpars=list(xlab="Fiscal Year", ylab="Apprehensions", lty=c(1:3)),col='blue',main='Time Series Data for Monthly Apprehensions')
@@ -174,7 +169,7 @@ tsplot <- function(ts) {
     text(x=monthly$year[i]+0.9,y=monthly$mean[i],pos=4,labels=label[i],col='red',cex=0.5,font=2)
   }
   abline(v=2000:2017,col='grey',lty=3)
-  legend('topright',lty=1,col='red',legend = 'Average Apprehensions for year 20xx',cex = 0.75)
+  legend('topright',lty=1,col='red',legend = 'Average Apprehensions for fiscal year 20xx',cex = 0.75)
 }
 
 tsplot(ts3)
