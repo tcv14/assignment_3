@@ -6,16 +6,22 @@ data2017 <- readRDS('./Data/PB Apprehensions 2017.rds')
 
 # Define UI for application that draws a histogram
 ui <- pageWithSidebar(
+  
+  # title of the app
   headerPanel("Comparison of Apprehensions in 2010 and 2017"),
   
+  # create a sidebar
   sidebarPanel(
+    
+    # display chosen panel only when a specified tab is selected by the user
     conditionalPanel(condition='input.tabselected=="By Sector"',
                      selectInput("sector", "Sector:",choices=data2010$Sector)),
-    conditionalPanel(condition ='input.tabselected="By Month"',
+    conditionalPanel(condition ='input.tabselected=="By Month"',
                      selectInput("month", "Month:",choices=colnames(data2010)[-1]))
   ),
   
   mainPanel(
+    # create two tabs in the main panel to display two barplots
     tabsetPanel(
       id='tabselected',
       tabPanel("By Sector",plotOutput("ex1")),
@@ -26,6 +32,7 @@ ui <- pageWithSidebar(
 # Define server logic required to draw a histogram
 server <- function(input, output) {
    
+  # render the first barplot, which is the comparison by sector
   output$ex1 <- renderPlot({
     barplot(height = as.matrix(rbind(data2010[data2010$Sector==input$sector,2:13],
                                      data2017[data2017$Sector==input$sector,2:13])),
@@ -40,6 +47,7 @@ server <- function(input, output) {
   }
   )
   
+  # render the second barplot, which is the comparison by month
   output$ex2 <- renderPlot({
       barplot(height= as.matrix(rbind(data2010[,which(colnames(data2010)==input$month)],
                                       data2017[,which(colnames(data2017)==input$month)])),
