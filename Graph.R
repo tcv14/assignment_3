@@ -162,7 +162,7 @@ ts2 <- as.vector(t(ts1))
 ts3 <- ts(ts2, start = c(2000,1), frequency=12)
 
 tsplot <- function(ts) {
-  ts.plot(ts, gpars=list(xlab="Fiscal Year", ylab="Apprehensions", lty=c(1:3)),col='blue',main='Monthly Apprehensions Across All Southern US Sectors between Fiscal Year 2000 and 2017')
+  ts.plot(ts, gpars=list(xlab="Fiscal Year", ylab="Apprehensions", lty=c(1:3)),col='blue',main='Monthly Apprehensions Across All Southern US Sectors Between Fiscal Year 2000 and 2017')
   label <- as.character(seq(from=2000,to=2017))
   for (i in 1:18) {
     segments(monthly$year[i],monthly$mean[i],monthly$year[i]+1,monthly$mean[i],col='red')
