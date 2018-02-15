@@ -1,85 +1,68 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-
 library(shiny)
 
-# load in the required data and rbind to create one data frame for side by side barplots later
+# load in the required data
 data2010 <- readRDS('./Data/PB Apprehensions 2010.rds')
 data2017 <- readRDS('./Data/PB Apprehensions 2017.rds')
-monthlysummaries <- readRDS('./Data/PB monthly summaries.rds')
 
-completedata <- rbind(data2010,data2017)
-
-# https://gist.github.com/aagarw30/c593799bc7d8557dc863411bb552e4f4
-
-# Define UI for application that draws a barplot
-ui <- pageWithSidebar(    
+# Define UI for application that draws a histogram
+ui <- pageWithSidebar(
   
-  # Give a title
-  headerPanel("Apprehensions in 2010 and 2017"),
+  # title of the app
+  headerPanel("Comparison of Apprehensions in 2010 and 2017"),
   
-  # Generate a row with a sidebar
-  sidebarPanel(      
+  # create a sidebar
+  sidebarPanel(
     
-    # Define the sidebar with one input
-    conditionalPanel(
-      condition="input.tabselected==Comparison between 2010 and 2017",
-      selectInput("sector", "Sector:",choices=completedata$Sector)),
-    conditionalPanel(
-      condition="input.tabselected==By Year",
-      selectInput("year","Year:",choices=monthlysummaries$year))
+    # display chosen panel only when a specified tab is selected by the user
+    conditionalPanel(condition='input.tabselected=="By Sector"',
+                     selectInput("sector", "Sector:",choices=data2010$Sector)),
+    conditionalPanel(condition ='input.tabselected=="By Month"',
+                     selectInput("month", "Month:",choices=colnames(data2010)[-1]))
   ),
-  #    sidebarPanel(
-  #      selectInput("sector", "Sector:", 
-  #                  choices=completedata$Sector)
-  #    ),
   
-  # Create a barplot
   mainPanel(
-    tags$style(type="text/css",
-               ".shiny-output-error { visibility: hidden; }",
-               ".shiny-output-error:before { visibility: hidden; }"
-    ),
+    # create two tabs in the main panel to display two barplots
     tabsetPanel(
-      id="tabselected",
-      tabPanel("Comparison between 2010 and 2017",value=1,plotOutput("distPlot1")),
-      tabPanel("By Year",value=2,plotOutput("distPlot2"))
-    )
-    #      plotOutput("distPlot")
+      id='tabselected',
+      tabPanel("By Sector",plotOutput("ex1")),
+      tabPanel("By Month",plotOutput("ex2")))
   )
-  
 )
 
-# Define server logic required for a side by side barplot
+# Define server logic required to draw a histogram
 server <- function(input, output) {
-  
-  # Fill in the spot we created for a plot
-  output$distPlot1 <- renderPlot({
-    
-    # Render a barplot
-    barplot(height=as.matrix(completedata[completedata$Sector==input$sector,2:13]),
+   
+  # render the first barplot, which is the comparison by sector
+  output$ex1 <- renderPlot({
+    barplot(height = as.matrix(rbind(data2010[data2010$Sector==input$sector,2:13],
+                                     data2017[data2017$Sector==input$sector,2:13])),
             beside = TRUE,
             las=2,
             main=input$sector,
             ylab="Number of Apprehensions",
             xlab="Month",
-            col = c("green","blue"))
+            col = c("green","blue"),
+            cex.names = 0.8)
     legend("topright",c("2010","2017"),pch=19,col=c("green","blue"),bty="n")
-  })
-  output$distPlot2 <- renderPlot({
-    barplot(height=as.matrix(monthlysummaries[monthlysummaries$year==input$year,2:13]),
-            las=2,
-            main=imput$year,
-            ylab="Number of Apprehentions",
-            xlab="Year")
-  })
-}
+  }
+  )
+  
+  # render the second barplot, which is the comparison by month
+  output$ex2 <- renderPlot({
+      barplot(height= as.matrix(rbind(data2010[,which(colnames(data2010)==input$month)],
+                                      data2017[,which(colnames(data2017)==input$month)])),
+              beside = TRUE,
+              las=2,
+              names.arg = data2010$Sector,
+              main=input$month,
+              ylab="Number of Apprehensions",
+              xlab="Sector",
+              col = c("red","orange"),
+              cex.names=0.6)
+    legend("topright",c("2010","2017"),pch=19,col=c("red","orange"),bty="n")
+    })
+  }
 
-# Run the application and see what happens
+# Run the application 
 shinyApp(ui = ui, server = server)
+
