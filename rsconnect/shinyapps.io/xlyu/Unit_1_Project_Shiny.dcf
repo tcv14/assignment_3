@@ -1,0 +1,13 @@
+name: Unit_1_Project_Shiny
+title: Unit_1_Project_Shiny
+username:
+account: xlyu
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 281835
+bundleId: 1223976
+url: https://xlyu.shinyapps.io/Unit_1_Project_Shiny/
+when: 1518669046.07298
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: BP Southwest Border Sector Apps FY1960 - FY2017.pdf|Graph.R|README.md|Report.pdf|Report.Rmd|Slides.Rmd
