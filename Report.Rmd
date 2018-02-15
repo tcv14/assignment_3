@@ -13,7 +13,7 @@ source('Graph.R') # attach the R script that contains major
 
 ## Comparison of 2010 and 2017 Data by Month
 
-Figure 1 and 2 show the comparison of total number of illeagl alien apprehensions in 2010 and 2017 by month. The total number of apprehensions is generally lowerer in 2017 compared with data in 2010 for each month. There was a sharp decrease in the number of total apprehensions in Tucson from 2010 to 2017. However, it's noteworthy to point out that there was a large increase in the total number of apprehension in Rio Grande Valley from 2010 to 2017.
+Figure 1 and 2 show the comparison of total number of illegal alien apprehensions in 2010 and 2017 by month. The total number of apprehensions is generally lower in 2017 compared with data in 2010 for each month. There was a sharp decrease in the number of total apprehensions in Tucson from 2010 to 2017. However, it's noteworthy to point out that there was a large increase in the total number of apprehension in Rio Grande Valley from 2010 to 2017.
 
 ```{r month plot,echo=FALSE,fig.align='center',fig.cap='Comparison of Data by Month',fig.height=8}
 par(mfrow=c(3,2))
@@ -34,7 +34,7 @@ month_graph(PB2010,PB2017,'September')
 
 # Comparison of 2010 and 2017 Data by Sector
 
-Figure 3 and 4 show the comparsion of total number of illegal alien apprehensions in 2010 and 2017 by sector. In some sectors such as El Centro, San Diego, and Tucson, there was a significant drop in total number of apprehensions for each month from 2010 to 2017. In contrast, the total number of apprehensions increased sharply in every month in sectors such as El Paso, Rio Grande Valley, andYuma from 2010 to 2017.
+Figure 3 and 4 show the comparsion of total number of illegal alien apprehensions in 2010 and 2017 by sector. In some sectors such as El Centro, San Diego, and Tucson, there was a significant drop in total number of apprehensions for each month from 2010 to 2017. In contrast, the total number of apprehensions increased sharply in every month in sectors such as El Paso, Rio Grande Valley, and Yuma from 2010 to 2017.
 
 ```{r sector plot,echo=FALSE,fig.align='center',fig.cap='Comparison of Data by Sector',fig.height=8}
 par(mfrow=c(3,2))
@@ -49,3 +49,12 @@ sector_graph(PB2010,PB2017,'Tucson')
 sector_graph(PB2010,PB2017,'Yuma')
 ```
 
+# Statistical Tests
+
+## t-test for Difference in Mean Apprehensions by Month
+
+First we performed an F-test to compare the variances of the two cities with the most apprehensions in 2010 and 2017, respectively. We found that we failed to reject $H_0$ at any significance level and can conclude that the variances of the two samples are equal. Next, we performed an initial paired t-test of $H_0: \mu_{Tucson} = \mu_{Rio Grande Valley} vs. H_A: \mu_{Tucson} \neq \mu_{Rio Grande Valley}$ to test whether there was a difference in mean apprehensions between the two cities. Here, we have to reject the null hypothesis with a significance level of $\alpha=0.05$ and conclude that the mean level in 2010 is greater than the mean level in 2017. Finally, we performed a second t-test of $H_0: \mu_{Tucson} = \mu_{Rio Grande Valley} vs. H_A: \mu_{Tucson} < \mu_{Rio Grande Valley}$ to find out if the mean level of apprehension increases from 2010 to 2017. Once again, we have to reject the null hypothesis with a significance level of $\alpha=0.05$ and conclude that the mean level in 2010 is greater than the mean level in 2017.
+
+## t-test for Difference in Mean Apprehensions by Three-Month Period
+
+Write the same as the previous section? Or too redundant?
