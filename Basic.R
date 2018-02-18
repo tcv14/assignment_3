@@ -29,7 +29,7 @@ month_graph <- function(PB1,PB2,n){
                'September')
     time <- which(month==n)
     par(mar=c(5, 4, 4, 7), xpd=TRUE) # adjustments for the barplot
-    barplot(as.matrix(rbind(PB1[,time+1],PB2[,time+1])),col=c('red','orange'),ylab='Number of Apprehensions',
+    barplot(as.matrix(rbind(PB1[,time+1],PB2[,time+1])),col=c('red','orange'),xlab='Month',ylab='Number of Apprehensions',
             main=paste('Total Number of Apprehensions in', n,sep = ' '), names.arg = PB1[,1],
             beside = TRUE,las=2,cex.names = 0.5)
     legend("topright", inset=c(-0.15,0),
