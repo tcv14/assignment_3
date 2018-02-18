@@ -3,7 +3,7 @@ PB2010 <- read.csv('./Data/BP Apprehensions 2010.csv')
 PB2017 <- read.csv('./Data/PB Apprehensions 2017.csv')
 monthly <- read.csv('./Data/PB monthly summaries.csv')
 
-# Clean the data
+# Clean the data (the goal is to eliminate the extra row and column of the dataset, and also to change format of the data)
 PB2017 <- PB2017[,-14]
 PB2017 <- PB2017[-10,]
 PB2017 <- cbind(Sector=PB2010$Sector,as.data.frame(sapply(PB2017[2:ncol(PB2017)],function(x){as.integer(gsub(',','',x))})))
@@ -23,22 +23,20 @@ saveRDS(monthly,file='./Data/PB monthly summaries.rds')
 # PB1 and PB2 should be dataframes, and the function is designed to let PB2010 = PB1 and PB2017 = PB2
 # n should be a string that indicates the month of the graph
 
+
 month_graph <- function(PB1,PB2,n){
     month <- c('October','November','December','January','Feburary','March','April','May','June','July','August',
                'September')
     time <- which(month==n)
-    m <- rbind(PB1[,time+1],PB2[,time+1])
-    rownames(m) <- c('2010','2017')
-    colnames(m) <- PB2010$Sector
-    barplot(as.matrix(m),col=c('darkblue','red'),ylab='Number of Apprehensions',
-            main=paste('Total Number of Apprehensions in', n,sep = ' '),
-            beside = TRUE,las=2,cex.names = 0.6)
-    legend("topleft", 
-           legend = rownames(m), 
-           fill = c("darkblue", "red"))
+    par(mar=c(5, 4, 4, 7), xpd=TRUE) # adjustments for the barplot
+    barplot(as.matrix(rbind(PB1[,time+1],PB2[,time+1])),col=c('red','orange'),ylab='Number of Apprehensions',
+            main=paste('Total Number of Apprehensions in', n,sep = ' '), names.arg = PB1[,1],
+            beside = TRUE,las=2,cex.names = 0.5)
+    legend("topright", inset=c(-0.15,0),
+           legend = c('2010','2017'), cex=0.7,
+           fill = c("red", "orange"))
 }
 
-month_graph(PB2010,PB2017,'October')
 
 # Compare by sector
 
@@ -49,49 +47,46 @@ month_graph(PB2010,PB2017,'October')
 sector_graph <- function(PB1,PB2,n){
     sector <- as.character(PB2010$Sector)
     s <- which(sector==n)
-    m <- rbind(PB1[s,2:13],PB2[s,2:13])
-    rownames(m) <- c('2010','2017')
-    colnames(m) <- c('October','November','December','January','Feburary','March','April','May','June','July','August',
-                    'September')
-    barplot(as.matrix(m),col=c('yellow','green'),ylab='Number of Apprehensions',
-            main=paste('Total Number of Apprehensions in',n,sep = ' '),
+    par(mar=c(5, 4, 4, 7), xpd=TRUE)
+    barplot(as.matrix(rbind(PB1[s,2:13],PB2[s,2:13])),col=c('green','blue'),ylab='Number of Apprehensions',
+            main=paste('Total Number of Apprehensions in',n,sep = ' '),cex.names=0.9,
             beside = TRUE, las=2)
-    legend("topright", 
-           legend = rownames(m), 
-           fill = c("yellow", "green"))
+    legend("topright",inset=c(-0.15,0),
+           legend = c('2010','2017'), cex=0.7,
+           fill = c("green", "blue"))
 }
 
 
 # PART B t-test by sector
 
 # Sector with most apprehensions in 2010
-PB2010$Total <- apply(PB2010[,-1],1,sum)
-most_2010 <- PB2010[PB2010$Total==max(PB2010$Total),]
+PB2010$Total <- apply(PB2010[,-1],1,sum) # calculate total apprehensions for each sector in 2010
+most_2010 <- PB2010[PB2010$Total==max(PB2010$Total),2:13] # pull out values of the sector with most apprehensions
 most_2010_s <- as.character(PB2010$Sector[PB2010$Total==max(PB2010$Total)]) # gives the name of the sector
 
 # Sector with most apprehensions in 2017
-PB2017$Total <- apply(PB2017[,-1],1,sum)
-most_2017 <- PB2017[PB2017$Total==max(PB2017$Total),]
+PB2017$Total <- apply(PB2017[,-1],1,sum) # calculate total apprehensions for each sector in 2017
+most_2017 <- PB2017[PB2017$Total==max(PB2017$Total),2:13] # pull out values of the sector with most apprehensions
 most_2017_s <- as.character(PB2017$Sector[PB2017$Total==max(PB2017$Total)]) # gives the name of the sector
 
-# Combine these two rows as a new dataframe
-most <- as.data.frame(t(rbind(most_2010,most_2017)))
-colnames(most) <- c('2010','2017')
-most <- most[-1,]
-most <- most[-13,]
-most$`2010` <- as.numeric(as.character(most$`2010`))
-most$`2017` <- as.numeric(as.character(most$`2017`))
+# Combine most apprehensions in 2010 and 2017, with 2010 data in the first column and 2017 data in the second column, and then convernt them to numeric values
+most <- t(rbind(most_2010,most_2017))
+most <- apply(most,2,function(x) as.numeric(as.character(x)))
 
 # a variance test first
-var.test(most$`2010`,most$`2017`) # the result of the test is that two samples have same variance
+# the result of the test is that two samples have same variance
+
+var.test(most[,1],most[,2]) 
 
 # then the initial t-test
-t.test(most$`2010`,most$`2017`,paired=FALSE,var.equal = TRUE) 
 # with a significance level of 0.05, we have to reject the null hypothesis and conclude that there are differences in mean
 
+t.test(most[,1],most[,2],paired=FALSE,var.equal = TRUE) 
+
 # a second t-test to find out if the mean level of apprehension increases from 2010 to 2017
-t.test(most$`2010`,most$`2017`,paired=FALSE,var.equal = TRUE,alternative='greater')
 # with a significance level of 0.05, we have to reject the null hypothesis and conclude that the mean level in 2010 is greater than the mean level in 2017
+
+t.test(most[,1],most[,2],paired=FALSE,var.equal = TRUE,alternative='greater')
 
 
 
@@ -99,31 +94,25 @@ t.test(most$`2010`,most$`2017`,paired=FALSE,var.equal = TRUE,alternative='greate
 
 # Three months periods
 
-# write a function that would return a dataframe with the total number of apprehensions in 3-month period
-# object should be a data frame, particularly, should be either PB2010 or PB2017
+# write a function three_period that would return a data frame with the total number of apprehensions in 3-month period, and gives the total number of apprehenisons across all sectors in each three-month period
+# 'object' should be a data frame, particularly, should be either PB2010 or PB2017
 
 three_period <- function(object) {
-  period <- data.frame()
+  period <- data.frame() # an empty data frame first
   for (i in (1:nrow(object))) {
     for (j in (1:(ncol(object)-3))){
       period[i,j] <- object[i,j+1]+object[i,j+2]+object[i,j+3]
     }
   }
+  period <- rbind(period,colSums(period))
   colnames(period) <- c('Oct-Dec','Nov-Jan','Dec-Feb','Jan-Mar','Feb-Apr','Mar-May','Apr-Jun',
                         'May-Jul','Jun-Aug','Jul-Sep')
-  rownames(period) <- PB2017$Sector
+  rownames(period) <- c(PB2017$Sector,'Total')
   period
 }
 
-t_month_2010 <- three_period(PB2010[,1:13])
-t_month_2017 <- three_period(PB2017[,1:13])
-
-# Calculate the total apprehension for each three month period and assign a name for the new row
-t_month_2010 <- rbind(t_month_2010,colSums(t_month_2010))
-rownames(t_month_2010) <- c(rownames(t_month_2010)[-length(rownames(t_month_2010))],'Total')
-
-t_month_2017 <- rbind(t_month_2017,colSums(t_month_2017))
-rownames(t_month_2017) <- c(rownames(t_month_2017)[-length(rownames(t_month_2017))],'Total')
+t_month_2010 <- three_period(PB2010[,1:13]) # calculate the number of apprehensions in three-month periods in 2010
+t_month_2017 <- three_period(PB2017[,1:13]) # calculate the number of apprehensions in three-month periods in 2017
 
 # Find the maximum apprehension level for each year and return the time period
 max_2010 <- t_month_2010[,t_month_2010[length(t_month_2010),]==max(t_month_2010[length(t_month_2010),])]
@@ -136,40 +125,45 @@ max_2017_period <- colnames(t_month_2017)[t_month_2017[length(t_month_2017),]==m
 max_three <- as.data.frame(cbind(max_2010,max_2017))
 
 # Perform a variance test first
-var.test(max_three$max_2010,max_three$max_2017) # the result of the variance test is that two samples having the same variance
+# the result of the variance test is that two samples having the same variance
+
+var.test(max_three$max_2010,max_three$max_2017) 
 
 # then do a two-sided t-test
-t.test(max_three$max_2010,max_three$max_2017,paired = FALSE,var.equal = TRUE)
 # with a significance level of 0.05, we can conclude that means of these two samples are different
 
+t.test(max_three$max_2010,max_three$max_2017,paired = FALSE,var.equal = TRUE)
+
 # then do a one-sided test to see whether there is an increase in apprehension from 2010 to 2017
-t.test(max_three$max_2010,max_three$max_2017,paired=FALSE,var.equal = TRUE,alternative = 'less')
 # with a significance level of 0.05, we can conclude that mean level of apprehension in 2017 is greater than the mean level of apprehension in 2010
 # thus we can say that there is an increae in meal apprehension level from 2010 to 2017
+
+t.test(max_three$max_2010,max_three$max_2017,paired=FALSE,var.equal = TRUE,alternative = 'less')
+
 
 
 
 # PART D time series data
 
-# order the dataset so that the year is in ascending order
+# order the dataset so that values in the column 'year' is in ascending order
 monthly <- monthly[order(monthly$year),]
 
 # yearly average apprehension
 monthly$mean <- apply(monthly[,-1],1,mean)
 
-ts1 <- monthly[,2:13]
-ts2 <- as.vector(t(ts1))
-ts3 <- ts(ts2, start = c(2000,1), frequency=12)
+ts <- ts(as.vector(t(monthly[,2:13])),start = c(2000,1),frequency=12) # create a time series object
+# note that we manually adjusted the beginning date of the time series data so that it follows the fiscal year instead of normal calendar year. More explanations in the report and slides.
 
+# write a function for the time series plot, which would return not only the basic time series plot, but would also add multiple short lines signifying the average value for each year
 tsplot <- function(ts) {
+  dev.off()
   ts.plot(ts, gpars=list(xlab="Fiscal Year", ylab="Apprehensions", lty=c(1:3)),col='blue',main='Monthly Apprehensions Across All Southern US Sectors Between Fiscal Year 2000 and 2017')
   label <- as.character(seq(from=2000,to=2017))
   for (i in 1:18) {
     segments(monthly$year[i],monthly$mean[i],monthly$year[i]+1,monthly$mean[i],col='red')
     text(x=monthly$year[i]+0.9,y=monthly$mean[i],pos=4,labels=label[i],col='red',cex=0.5,font=2)
   }
-  abline(v=2000:2017,col='grey',lty=3)
+  abline(v=2000:2018,col='grey',lty=3)
   legend('topright',lty=1,col='red',legend = 'Average Apprehensions for fiscal year 20xx',cex = 0.75)
 }
 
-tsplot(ts3)
