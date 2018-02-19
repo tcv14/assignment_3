@@ -78,16 +78,9 @@ most <- apply(most,2,function(x) as.numeric(as.character(x)))
 
 var.test(most[,1],most[,2]) 
 
-# then the initial t-test
-# with a significance level of 0.05, we have to reject the null hypothesis and conclude that there are differences in mean
-
-t.test(most[,1],most[,2],paired=FALSE,var.equal = TRUE) 
-
-# a second t-test to find out if the mean level of apprehension increases from 2010 to 2017
+# then the t-test to find out if the mean level of apprehension decreases from 2010 to 2017
 # with a significance level of 0.05, we have to reject the null hypothesis and conclude that the mean level in 2010 is greater than the mean level in 2017
-
-t.test(most[,1],most[,2],paired=FALSE,var.equal = TRUE,alternative='greater')
-
+t.test(most[,1],most[,2],var.equal = TRUE,alternative='greater')
 
 
 # PART C t-test for three month period
@@ -129,18 +122,9 @@ max_three <- as.data.frame(cbind(max_2010,max_2017))
 
 var.test(max_three$max_2010,max_three$max_2017) 
 
-# then do a two-sided t-test
-# with a significance level of 0.05, we can conclude that means of these two samples are different
-
-t.test(max_three$max_2010,max_three$max_2017,paired = FALSE,var.equal = TRUE)
-
-# then do a one-sided test to see whether there is an increase in apprehension from 2010 to 2017
-# with a significance level of 0.05, we can conclude that mean level of apprehension in 2017 is greater than the mean level of apprehension in 2010
-# thus we can say that there is an increae in meal apprehension level from 2010 to 2017
-
-t.test(max_three$max_2010,max_three$max_2017,paired=FALSE,var.equal = TRUE,alternative = 'less')
-
-
+# then the t-test
+# with a significance level of 0.05, we can conclude that there is no difference in means of these two samples
+t.test(max_three$max_2010,max_three$max_2017,var.equal = TRUE)
 
 
 # PART D time series data
@@ -156,8 +140,7 @@ ts <- ts(as.vector(t(monthly[,2:13])),start = c(2000,1),frequency=12) # create a
 
 # write a function for the time series plot, which would return not only the basic time series plot, but would also add multiple short lines signifying the average value for each year
 tsplot <- function(ts) {
-  dev.off()
-  ts.plot(ts, gpars=list(xlab="Fiscal Year", ylab="Apprehensions", lty=c(1:3)),col='blue',main='Monthly Apprehensions Across All Southern US Sectors Between Fiscal Year 2000 and 2017')
+  ts.plot(ts, gpars=list(xlab="Fiscal Year", ylab="Apprehensions", lty=c(1:3)),col='blue',main='Monthly Apprehensions Across All Southern \nUS Sectors Between Fiscal Year 2000 and 2017')
   label <- as.character(seq(from=2000,to=2017))
   for (i in 1:18) {
     segments(monthly$year[i],monthly$mean[i],monthly$year[i]+1,monthly$mean[i],col='red')
