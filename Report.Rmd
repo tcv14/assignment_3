@@ -1,21 +1,26 @@
 ---
 title: "Report"
-author: "Xiru Lyu,Tiffany Cheng"
+author: "Tiffany Cheng, Xiru Lyu"
 date: "2/13/2018"
 output: pdf_document
 ---
 
 ```{r,include=FALSE}
-source('Graph.R') # attach the R script that contains major 
+# attach the R script that contains codes for data visualization and various statistical tests
+source('Basic.R') 
 ```
 
-## Background
+# Background
+
+# https://www.cnn.com/2017/05/09/politics/border-crossings-apprehensions-down-trump/index.html
+
+# Data Comparison
 
 ## Comparison of 2010 and 2017 Data by Month
 
 Figure 1 and 2 show the comparison of total number of illegal alien apprehensions in 2010 and 2017 by month. The total number of apprehensions is generally lower in 2017 compared with data in 2010 for each month. There was a sharp decrease in the number of total apprehensions in Tucson from 2010 to 2017. However, it's noteworthy to point out that there was a large increase in the total number of apprehension in Rio Grande Valley from 2010 to 2017.
 
-```{r month plot,echo=FALSE,fig.align='center',fig.cap='Comparison of Data by Month',fig.height=8}
+```{r month plot,echo=FALSE,fig.align='center',fig.cap='Comparison of Data by Month',fig.height=8,fig.width=8}
 par(mfrow=c(3,2))
 month_graph(PB2010,PB2017,'October')
 month_graph(PB2010,PB2017,'November')
@@ -32,11 +37,11 @@ month_graph(PB2010,PB2017,'September')
 ```
 
 
-# Comparison of 2010 and 2017 Data by Sector
+## Comparison of 2010 and 2017 Data by Sector
 
-Figure 3 and 4 show the comparsion of total number of illegal alien apprehensions in 2010 and 2017 by sector. In some sectors such as El Centro, San Diego, and Tucson, there was a significant drop in total number of apprehensions for each month from 2010 to 2017. In contrast, the total number of apprehensions increased sharply in every month in sectors such as El Paso, Rio Grande Valley, and Yuma from 2010 to 2017.
+Figure 3 and 4 show the comparison of total number of illegal alien apprehensions in 2010 and 2017 by sector. In some sectors such as El Centro, San Diego, and Tucson, there was a significant drop in total number of apprehensions for each month from 2010 to 2017. In contrast, the total number of apprehensions increased sharply in every month in sectors such as El Paso, Rio Grande Valley, and Yuma from 2010 to 2017.
 
-```{r sector plot,echo=FALSE,fig.align='center',fig.cap='Comparison of Data by Sector',fig.height=8}
+```{r sector plot,echo=FALSE,fig.align='center',fig.cap='Comparison of Data by Sector',fig.height=8,fig.width=8}
 par(mfrow=c(3,2))
 sector_graph(PB2010,PB2017,'Big Bend')
 sector_graph(PB2010,PB2017,'Del Rio')
@@ -51,10 +56,47 @@ sector_graph(PB2010,PB2017,'Yuma')
 
 # Statistical Tests
 
-## t-test for Difference in Mean Apprehensions by Month
+## Difference in Mean Maximum Apprehensions 
 
-First we performed an F-test to compare the variances of the two cities with the most apprehensions in 2010 and 2017, respectively. We found that we failed to reject $H_0$ at any significance level and can conclude that the variances of the two samples are equal. Next, we performed an initial paired t-test of $H_0: \mu_{Tucson} = \mu_{Rio Grande Valley} vs. H_A: \mu_{Tucson} \neq \mu_{Rio Grande Valley}$ to test whether there was a difference in mean apprehensions between the two cities. Here, we have to reject the null hypothesis with a significance level of $\alpha=0.05$ and conclude that the mean level in 2010 is greater than the mean level in 2017. Finally, we performed a second t-test of $H_0: \mu_{Tucson} = \mu_{Rio Grande Valley} vs. H_A: \mu_{Tucson} < \mu_{Rio Grande Valley}$ to find out if the mean level of apprehension increases from 2010 to 2017. Once again, we have to reject the null hypothesis with a significance level of $\alpha=0.05$ and conclude that the mean level in 2010 is greater than the mean level in 2017.
+We would like to find out whether there has been a change in the maximum level of apprehensions in 2010 and in 2017. This is a comparison between the sector with the most apprehensions in 2010 (`r most_2010_s`) and the sector with the most apprehensions in 2017 (`r most_2017_s`). Before the conducting the t-test, we performed an F-test to compare the variances of the two sectors with the most apprehensions in 2010 and 2017, respectively. The result of test, as shown in the table below, points out that variances of the two samples are equal.
 
-## t-test for Difference in Mean Apprehensions by Three-Month Period
+```{r,echo=FALSE}
+var.test(most[,1],most[,2]) 
+```
 
-Write the same as the previous section? Or too redundant?
+We then performed an  t-test to test whether the mean of maximum apprehension level decreases in 2017 compared with that in 2010, which has the following hypothesis: 
+
+$$H_0: \mu_{`r most_2010_s`} = \mu_{`r most_2017_s`}$$ $$H_A: \mu_{`r most_2010_s`} > \mu_{`r most_2017_s`}$$
+
+Suggested by the summary table shown below, with a p-value of 0.03172 and a significance level of $\alpha=0.05$, we would reject the null hypothesis and conclude that there is the mean in 2010 is larger than that in 2017. Therefore, we can infer that there the maximum apprehension level in 2017 is lower compared with that in 2010. 
+```{r,echo=FALSE}
+t.test(most[,1],most[,2],var.equal = TRUE,alternative='greater')
+```
+
+
+## Difference in Mean Maximum Apprehensions by Three-Month Period
+
+We then would like to know whether there is a difference in the maximum level of apprehension by three-month period in 2010 and in 2017. This is a comparison between the time period with the largest total number of apprehensions in 2010 (`r max_2010_period`) and the time period with largest total number of apprehensions in 2017 (`r max_2017_period`). Before conducting the actual t-test, we performed a variance test to see whether variances of the two samples are the same. The result of the test, which is shown below, suggests that there is no difference between two variances. 
+
+```{r,echo=FALSE}
+var.test(max_three$max_2010,max_three$max_2017) 
+```
+
+A more accurate t-test can be then performed, testing whether the mean of the maximum level apprehensions in three-month period in 2010 is different from that in 2017. The hypothesis of the test is as follows:
+
+$$H_0: \mu_{2010} = \mu_{2017}$$ $$H_A: \mu_{2010} \neq \mu_{2017}$$
+
+The result of the t-test is listed below. With a significance level $\alpha=0.05$ and a p-value of 0.8032, we can say that there is no difference in means of two samples. Thus, we are to conclude that by three-month period, there is no change in the maximum apprehension level in 2017 compared with that in 2010.
+
+```{r,echo=FALSE}
+t.test(max_three$max_2010,max_three$max_2017,var.equal = TRUE)
+```
+
+# Time Series Plot
+
+Figure 5 is a time series plot for the monthly apprehension level across all southern US sectors from fiscal year 2010 to 2017. Note that a fiscal year starts in October rather than in January as the typical calendar year, and thus for the convenience of labeling, we converted fiscal year into normal calendar year. We set the starting point of the time series object, October 2000, to be $(2000,1)$, which signifies the first month of the fiscal year 2000. Therefore, values on the x-axis of the time series plot are denoted in fiscal year. Notice that there are also segmented red lines in the plot, and they reflect the average number of apprehensions for each fiscal year. Each segmented red line covers the whole periods of each fiscal year, with a label indicating the year positioned to the right of the line. The plot shows that the level of apprehensions decreases over time from fiscal year 2000 to 2017, with 2000 having the highest level of apprehensions and 2017 having the lowest level of apprehensions. 
+
+```{r time series plot, echo=FALSE,fig.align='center',fig.width=10,fig.cap='Time Series Plot for Apprehensions Across All Sectors'}
+tsplot(ts)
+```
+
