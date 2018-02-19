@@ -80,7 +80,7 @@ var.test(most[,1],most[,2])
 
 # then the t-test to find out if the mean level of apprehension decreases from 2010 to 2017
 # with a significance level of 0.05, we have to reject the null hypothesis and conclude that the mean level in 2010 is greater than the mean level in 2017
-t.test(most[,1],most[,2],var.equal = TRUE,alternative='greater')
+t.test(most[,1],most[,2],var.equal = TRUE)
 
 
 # PART C t-test for three month period
@@ -150,3 +150,4 @@ tsplot <- function(ts) {
   legend('topright',lty=1,col='red',legend = 'Average Apprehensions for fiscal year 20xx',cex = 0.75)
 }
 
+tsplot(ts)
