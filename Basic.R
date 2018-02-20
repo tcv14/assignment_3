@@ -149,5 +149,3 @@ tsplot <- function(ts) {
   abline(v=2000:2018,col='grey',lty=3)
   legend('topright',lty=1,col='red',legend = 'Average Apprehensions for fiscal year 20xx',cex = 0.75)
 }
-
-tsplot(ts)
