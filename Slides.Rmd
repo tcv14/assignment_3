@@ -2,6 +2,7 @@
 title: "Analysis of Trends in Apprehensions Along the United States Southern Border"
 author: "Xiru Lyu and Tiffany Cheng"
 date: "2/19/2018"
+runtime: shiny
 output: ioslides_presentation
 ---
 
@@ -10,82 +11,95 @@ knitr::opts_chunk$set(echo = FALSE)
 source('Basic.R')
 ```
 
-## Background
+## Background {.larger}
 
 Illegal crossing of the United States southern border has been a central topic of debate in the current political climate. The data are from the US Customs and Border Protection. It is of particular interest to note that the federal fiscal year 2017 saw a all-time low in apprehensions compared to the past 17 years.
 
-## Comparision of Each Sector by Month
+## Data Comparsion: 2010 and 2017 {.larger}
 
-```{r}
-par(mfrow=c(3,4))
-month_graph(PB2010,PB2017,'October')
-month_graph(PB2010,PB2017,'November')
-month_graph(PB2010,PB2017,'December')
-month_graph(PB2010,PB2017,'January')
-month_graph(PB2010,PB2017,'Feburary')
-month_graph(PB2010,PB2017,'March')
-month_graph(PB2010,PB2017,'April')
-month_graph(PB2010,PB2017,'May')
-month_graph(PB2010,PB2017,'June')
-month_graph(PB2010,PB2017,'July')
-month_graph(PB2010,PB2017,'August')
-month_graph(PB2010,PB2017,'September')
+- Comparing for total number of illegal alien apprehensions in fiscal year 2010 and 2017 
+    1. By sector
+    2. By month
+- Link for interactive graph (Shiny App): https://xlyu.shinyapps.io/Unit_1_Project_Shiny/
+
+## Interactive Graph
+
+```{r,echo=FALSE}
+shinyAppFile('app.R')
 ```
 
-## Comparision of Each Month by Sector
+## Data Comparison: Conclusions {.larger}
 
-```{r}
-par(mfrow=c(3,3))
-sector_graph(PB2010,PB2017,'Big Bend')
-sector_graph(PB2010,PB2017,'Del Rio')
-sector_graph(PB2010,PB2017,'El Centro')
-sector_graph(PB2010,PB2017,'El Paso')
-sector_graph(PB2010,PB2017,'Laredo')
-sector_graph(PB2010,PB2017,'Rio Grande Valley')
-sector_graph(PB2010,PB2017,'San Diego')
-sector_graph(PB2010,PB2017,'Tucson')
-sector_graph(PB2010,PB2017,'Yuma')
-```
+- In some sectors, there was a significant drop in total number of apprehensions for each month in 2017 compared with data in 2010. 
+- The total number of apprehensions increased sharply in every month in sectors such as El Paso, Rio Grande Valley, and Yuma.
+- The total number of apprehensions is generally lower in 2017 compared with data in 2010 for each month.
 
-## Statistical Tests: Variance Test for One-month Period {.smaller}
+## Statistical Tests: Difference in Mean Maximum Apprehensions for One-month Period
+
+- We would like to find out whether there has been a change in the maximum level of apprehensions in 2010 and in 2017. 
+
+- This is a comparison between the sector with the most apprehensions in 2010 (`r most_2010_s`) and the sector with the most apprehensions in 2017 (`r most_2017_s`).
+
+## Variance Test for One-month Period {.smaller}
 $$H_0: \sigma^2_{`r most_2010_s`} = \sigma^2_{`r most_2017_s`}$$ $$H_A: \sigma^2_{`r most_2010_s`} \neq \sigma^2_{`r most_2017_s`}$$
 
 ```{r}
 var.test(most[,1],most[,2])
 ```
 
-We fail to reject the null hypothesis at $\alpha=0.05$ and conclude that the variances of `r most_2010_s` and `r most_2017_s` are equal.
+We fail to reject the null hypothesis at $\alpha=0.05$ and conclude that the variances of two samples `r most_2010_s` and `r most_2017_s` are equal.
 
-## Statistical Tests: Two Sample t-test for One-month Period {.smaller}
-$$H_0: \mu_{`r most_2010_s`} = \mu_{`r most_2017_s`}$$ $$H_A: \mu_{`r most_2010_s`} \neq \mu_{`r most_2017_s`}$$
+## Two Sample t-test for One-month Period {.smaller}
+$$H_0: \mu_{`r most_2010_s`} = \mu_{`r most_2017_s`}$$ $$H_A: \mu_{`r most_2010_s`} > \mu_{`r most_2017_s`}$$
 ```{r}
-t.test(most[,1],most[,2],var.equal = TRUE)
+t.test(most[,1],most[,2],var.equal = TRUE,alternative='greater')
 ```
 
-We fail to reject the null hypothesis at $\alpha=0.05$ and conclude that there is no difference in mean apprehensions between `r most_2010_s` in 2010 and `r most_2017_s` in 2017.
+We reject the null hypothesis at $\alpha=0.05$ and conclude that `r most_2010_s` in 2010 has a higher apprehension level than `r most_2017_s` in 2017.
 
-## Statistical Tests: Variance Test for Three-month Period {.smaller}
-$$H_0: \sigma^2_{`r max_2010_period`} = \sigma^2_{`r max_2017_period`}$$ $$H_A: \sigma^2_{`r max_2010_period`} \neq \sigma^2_{`r max_2017_period`}$$
+## Statistical Tests: Difference in Mean Maximum Apprehensions by Three-Month Period
+
+- We would like to know whether there is a difference in the maximum level of apprehension by three-month period in 2010 and in 2017. 
+
+- This is a comparison between the time period with the largest total number of apprehensions in 2010 (`r max_2010_period`) and the time period with largest total number of apprehensions in 2017 (`r max_2017_period`).
+
+## Variance Test for Three-month Period {.smaller}
+$$H_0: \sigma^2_{2010 (`r max_2010_period`)} = \sigma^2_{2017 (`r max_2017_period`)}$$ $$H_A: \sigma^2_{2010 (`r max_2010_period`)} \neq \sigma^2_{2017 (`r max_2017_period`)}$$
 
 ```{r}
 var.test(max_three$max_2010,max_three$max_2017)
 ```
 
-We fail to reject the null hypothesis at $\alpha=0.05$ and conclude that the variances of the three-month period `r max_2010_period` and of `r max_2017_period` are equal.
+We fail to reject the null hypothesis at $\alpha=0.05$ and conclude that the variances of the three-month period `r max_2010_period` in 2010 and of `r max_2017_period` in 2017 are equal.
 
 ## Statistical Tests: Two Sample t-test for Three-month Period {.smaller}
-$$H_0: \mu_{`r max_2010_period`} = \mu_{`r max_2017_period`}$$ $$H_A: \mu_{`r max_2010_period`} \neq \mu_{`r max_2017_period`}$$
+$$H_0: \mu_{2010 (`r max_2010_period`)} = \mu_{2017 (`r max_2017_period`)}$$ $$H_A: \mu_{2010 (`r max_2010_period`)} \neq \mu_{2017 (`r max_2017_period`)}$$
 ```{r}
 t.test(max_three$max_2010,max_three$max_2017,var.equal = TRUE)
 ```
 
-We fail to reject the null hypothesis at $\alpha=0.05$ and conclude that there is no difference in mean apprehensions between the three-month period of `r max_2010_period` in 2010 and of `r max_2017_period` in 2017.
+We fail to reject the null hypothesis at $\alpha=0.05$ and conclude that there is no difference in mean apprehensions between two different time periods.
 
-## Time Series {.smaller}
-In order to explore the claim that US border apprehensions are at an all-time low when compared to 17 years ago, a time series plot was used to graph long-term trend.
-```{r}
+## Statistical Tests: Conclusions {.larger}
+
+- mean of maximum apprehension level in 2010 and is higher than that in 2017
+
+- there is no difference in mean of maximum apprehensions between the three-month period of `r max_2010_period` in 2010 and of `r max_2017_period` in 2017
+
+## Time Series {.larger}
+- In order to explore the claim that US border apprehensions are at an all-time low when compared to 17 years ago, a time series plot was used to graph long-term trend.
+
+- The plot shows that level of apprehensions decreases over time from fiscal year 2000 to 2017, with 2000 having the highest level of apprehensions and 2017 having the lowest level of apprehensions.
+
+## Time Series Plot {.smaller}
+
+```{r,fig.width=9,fig.align='left'}
 tsplot(ts)
 ```
 
-## Conclusion {.smaller}
+_Note:_
+    **1.** Values on the x-axis are denoted in fiscal years
+    **2.** Red segmented lines reflect the average number of apprehensions for each fiscal year
+
+## Conclusion {.larger}
 Through the use of bar plots and statistical tests, we see that the trend has not changed significantly from 2010 to 2017. However, after looking at the trend over 17 years, it is evident that there has been a downward decline in border apprehensions from 2000 to 2017 and that the number of apprehensions in 2017 is at indeed an all-time low.

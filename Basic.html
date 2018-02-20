@@ -118,7 +118,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Basic.R</h1>
 <h4 class="author"><em>Xiru</em></h4>
-<h4 class="date"><em>Mon Feb 19 10:25:57 2018</em></h4>
+<h4 class="date"><em>Mon Feb 19 22:26:50 2018</em></h4>
 
 </div>
 
@@ -182,7 +182,6 @@ sector_graph &lt;- function(PB1,PB2,n){
 }
 
 
-
 # PART B t-test by sector
 
 # Sector with most apprehensions in 2010
@@ -214,9 +213,9 @@ var.test(most[,1],most[,2]) </code></pre>
 ## sample estimates:
 ## ratio of variances 
 ##           0.932051</code></pre>
-<pre class="r"><code># then the t-test to find out if the mean level of apprehension decreases from 2010 to 2017
+<pre class="r"><code># then the t-test to find out if the mean level of apprehension is higher in 2010 than in 2017
 # with a significance level of 0.05, we have to reject the null hypothesis and conclude that the mean level in 2010 is greater than the mean level in 2017
-t.test(most[,1],most[,2],var.equal = TRUE,alternative='greater')</code></pre>
+t.test(most[,1],most[,2],var.equal = TRUE,alternative = 'greater')</code></pre>
 <pre><code>## 
 ##  Two Sample t-test
 ## 

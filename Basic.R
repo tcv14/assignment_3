@@ -78,9 +78,9 @@ most <- apply(most,2,function(x) as.numeric(as.character(x)))
 
 var.test(most[,1],most[,2]) 
 
-# then the t-test to find out if the mean level of apprehension decreases from 2010 to 2017
+# then the t-test to find out if the mean level of apprehension is higher in 2010 than in 2017
 # with a significance level of 0.05, we have to reject the null hypothesis and conclude that the mean level in 2010 is greater than the mean level in 2017
-t.test(most[,1],most[,2],var.equal = TRUE)
+t.test(most[,1],most[,2],var.equal = TRUE,alternative = 'greater')
 
 
 # PART C t-test for three month period
