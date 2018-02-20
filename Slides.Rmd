@@ -17,7 +17,7 @@ Illegal crossing of the United States southern border has been a central topic o
 
 ## Data Comparsion: 2010 and 2017 {.larger}
 
-- Comparing for total number of illegal alien apprehensions in fiscal year 2010 and 2017 
+- Comparing total number of illegal alien apprehensions in fiscal year 2010 and 2017 
     1. By sector
     2. By month
 - Link for interactive graph (Shiny App): https://xlyu.shinyapps.io/Unit_1_Project_Shiny/
@@ -82,14 +82,14 @@ We fail to reject the null hypothesis at $\alpha=0.05$ and conclude that there i
 
 ## Statistical Tests: Conclusions {.larger}
 
-- mean of maximum apprehension level in 2010 and is higher than that in 2017
+- Mean maximum apprehension level in 2010 and is higher than that in 2017
 
-- there is no difference in mean of maximum apprehensions between the three-month period of `r max_2010_period` in 2010 and of `r max_2017_period` in 2017
+- There is no difference in mean maximum apprehensions between the three-month period of `r max_2010_period` in 2010 and of `r max_2017_period` in 2017
 
 ## Time Series {.larger}
-- In order to explore the claim that US border apprehensions are at an all-time low when compared to 17 years ago, a time series plot was used to graph long-term trend.
+- In order to explore the claim that US border apprehensions are at an all-time low when compared to 17 years ago, a time series plot was used to graph the long-term trend.
 
-- The plot shows that level of apprehensions decreases over time from fiscal year 2000 to 2017, with 2000 having the highest level of apprehensions and 2017 having the lowest level of apprehensions.
+- The plot shows that the level of apprehensions decreases over time from fiscal year 2000 to 2017, with 2000 having the highest level of apprehensions and 2017 having the lowest level of apprehensions.
 
 ## Time Series Plot {.smaller}
 
