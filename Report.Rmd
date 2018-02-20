@@ -1,7 +1,7 @@
 ---
 title: "Analysis of Trends in Apprehensions Along the United States Southern Border
 "
-author: "Tiffany Cheng, Xiru Lyu"
+author: "Tiffany Cheng and Xiru Lyu"
 date: "2/19/2018"
 output: pdf_document
 ---
